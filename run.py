@@ -27,7 +27,7 @@ def visualize_3d_volume(data, threshold=0.1):
 
     plt.show()
 
-
+# main
 if __name__ == "__main__":
     filepath = './dataset/testing/patient03-seg.nii'  
     data = load_and_normalize_nifti(filepath)

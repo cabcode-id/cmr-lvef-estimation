@@ -37,7 +37,7 @@ parser.add_argument("--Batch_size_val", default=1, type=int)
 parser.add_argument("--lr", default=0.0005, type=float)
 parser.add_argument("--lr_decay", default=0.980, type=float)
 parser.add_argument("--gpus", default=1, type=int)
-parser.add_argument("--maximum_epochs", default=400, type=int)
+parser.add_argument("--maximum_epochs", default=100, type=int)
 parser.add_argument("--patience_early_stop", default=400, type=int)
 parser.add_argument('--monitor', default='avg_val_iou', type=str)
 parser.add_argument('--Monitor_mode', default='max', type=str)
@@ -125,28 +125,31 @@ splits = KFold(n_splits=k_folds, shuffle=True, random_state=12345)
 # train + val dataset for 5 fold cross validation training
 concatenated_dataset = train_loader_ACDC(transform=None, train_index=None)
 
+if not os.path.exists("unet"):
+    os.mkdir("unet")
+
 #  path to store the checkpoints and the best model
-if not os.path.exists("../unet/checkpoints"):
-    os.mkdir("../unet/checkpoints")
-checkpoint_path = "../unet/checkpoints"
+if not os.path.exists("unet/checkpoints"):
+    os.mkdir("unet/checkpoints")
+checkpoint_path = "unet/checkpoints"
 
-if not os.path.exists("../unet/tb_logs"):
-    os.mkdir("../unet/tb_logs")
-tb_path = "../unet/tb_logs"
+if not os.path.exists("unet/tb_logs"):
+    os.mkdir("unet/tb_logs")
+tb_path = "unet/tb_logs"
 
-if not os.path.exists("../unet/csv_logs"):
-    os.mkdir("../unet/csv_logs")
-csv_path = "../unet/csv_logs"
+if not os.path.exists("unet/csv_logs"):
+    os.mkdir("unet/csv_logs")
+csv_path = "unet/csv_logs"
 
 # Temporarily store the validated image and ground truth plots --> to be moved to the respective folders
-if not os.path.exists(r'../unet/val_images_temp_3d/'):
-    os.makedirs(r'../unet/val_images_temp_3d/')
-val_path = r'../unet/val_images_temp_3d/'
+if not os.path.exists(r'unet/val_images_temp_3d/'):
+    os.makedirs(r'unet/val_images_temp_3d/')
+val_path = r'unet/val_images_temp_3d/'
 
 # Save the validation images and ground truths
-if not os.path.exists(r'../unet/val_images_save_3d/'):
-    os.makedirs(r'../unet/val_images_save_3d/')
-image_path = r'../unet/val_images_save_3d/'
+if not os.path.exists(r'unet/val_images_save_3d/'):
+    os.makedirs(r'unet/val_images_save_3d/')
+image_path = r'unet/val_images_save_3d/'
 
 """---------Post Processing---------"""
 keep_largest = monai.transforms.KeepLargestConnectedComponent(applied_labels=[1, 2, 3])
@@ -444,25 +447,25 @@ def run_training():
         best_model_path = checkpoint_callback.best_model_path
         model = model.load_from_checkpoint(best_model_path)
         model.eval().cuda()
-        if not os.path.exists(r'../unet/best_models/'):
-            os.makedirs(r'../unet/best_models/')
-        torch.save(model, str(Path('../unet/best_models/', file_name + '.pt')))
+        if not os.path.exists(r'unet/best_models/'):
+            os.makedirs(r'unet/best_models/')
+        torch.save(model, str(Path('unet/best_models/', file_name + '.pt')))
 
         # Folders to save the validation images for each fold
-        if not os.path.exists(os.path.join(r'../unet/', name, f"{fold + 1}_Fold")):
-            os.makedirs(os.path.join(r'../unet/', name, f"{fold + 1}_Fold"))
-        val_images_path = os.path.join(r'../unet/', name, f"{fold + 1}_Fold")
+        if not os.path.exists(os.path.join(r'unet/', name, f"{fold + 1}_Fold")):
+            os.makedirs(os.path.join(r'unet/', name, f"{fold + 1}_Fold"))
+        val_images_path = os.path.join(r'unet/', name, f"{fold + 1}_Fold")
 
         #  Move the validated images to the respective folders
         for filename in glob.glob(os.path.join(val_path, '*.*')):
             shutil.move(filename, val_images_path)
 
         # Save plots --> Loss, IoU and Dice
-        plot_out_path = str(Path(r"../unet/Plots/", name))
+        plot_out_path = str(Path(r"unet/Plots/", name))
         if not os.path.exists(plot_out_path):
             os.makedirs(plot_out_path)
 
-        event_acc = ea(str(Path(r"../unet/tb_logs/", name, "version_0")))
+        event_acc = ea(str(Path(r"unet/tb_logs/", name, "version_0")))
         event_acc.Reload()
 
         _, _, training_loss = zip(*event_acc.Scalars('avg_train_loss'))

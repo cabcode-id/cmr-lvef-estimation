@@ -29,7 +29,7 @@ test_transform = mt.Compose([
     mt.ToTensorD(keys=["image", "mask"], allow_missing_keys=False)
 ])
 # Test dataset
-test_data = DataLoader(test_loader_ACDC3(transform=test_transform, test_index=None), batch_size=1, shuffle=False)
+test_data = DataLoader(test_loader_ACDC(transform=test_transform, test_index=None), batch_size=1, shuffle=False)
 
 
 #  padding: just pass the image
@@ -76,7 +76,7 @@ def save_pred(img, mask, pred, outpath, name_model, idx, aff):
     # Folder to save the results
     if not os.path.exists(os.path.join(outpath, name_model)):
         os.makedirs(os.path.join(outpath, name_model))
-    out_save_path_image = os.path.join(outpath, name_model, f"{idx}_image" + '.nii.gz')
+    out_save_path_image_nii = os.path.join(outpath, name_model, f"{idx}_image" + '.nii.gz')
     out_save_path_pred = os.path.join(outpath, name_model, f"{idx}_pred" + '.nii.gz')
     out_save_path_mask = os.path.join(outpath, name_model, f"{idx}_gt" + '.nii.gz')
     # affine = np.diag([-1.25, -1.25, 10.0, 1.0])
@@ -85,12 +85,13 @@ def save_pred(img, mask, pred, outpath, name_model, idx, aff):
     affine = np.diag([torch.diagonal(aff)[0], torch.diagonal(aff)[1],
                       torch.diagonal(aff)[2], torch.diagonal(aff)[3]])
     print(affine)
-
+    print("cek3")
     # Save images
     img = img.squeeze()
     img = np.array(img.cpu())
     # show_results(img)
-    # print(type(img))
+    print(img)
+    print("cek4")
     for slices in range(img.shape[2]):
         out_show_img = img[:, :, slices]
         if not os.path.exists(os.path.join(outpath, name_model)):
@@ -101,9 +102,10 @@ def save_pred(img, mask, pred, outpath, name_model, idx, aff):
         plt.imsave(out_save_path_image, out_show_img, format='png', cmap='gray')
         plt.close()
     # saves the resampled images
+    print("cek5")
     img = nib.Nifti1Image(img, affine)
-    nib.save(img, out_save_path_image)
-
+    nib.save(img, out_save_path_image_nii)
+    print("cek6")
     # Save ground truths
     mask = mask.squeeze()
     mask = np.array(mask.cpu())
@@ -113,13 +115,14 @@ def save_pred(img, mask, pred, outpath, name_model, idx, aff):
         if not os.path.exists(os.path.join(outpath, name_model)):
             os.makedirs(os.path.join(outpath, name_model))
         out_save_path_mask = os.path.join(outpath, name_model, f"{idx}_{slices}_gt" + '.png')
+        out_save_path_mask_nii = os.path.join(outpath, name_model, f"{idx}_{slices}_gt" + '.nii.gz')
         image_file_name = f"{idx}_{slices}_gt"
         plt.title = image_file_name
         plt.imsave(out_save_path_mask, out_show_mask, format='png', cmap='gray')
         plt.close()
     # saves the resampled masks
     mask = nib.Nifti1Image(mask, affine)
-    nib.save(mask, out_save_path_mask)
+    nib.save(mask, out_save_path_mask_nii)
 
     # Save predictions
     # Post Processing
@@ -134,13 +137,14 @@ def save_pred(img, mask, pred, outpath, name_model, idx, aff):
         if not os.path.exists(os.path.join(outpath, name_model)):
             os.makedirs(os.path.join(outpath, name_model))
         out_save_path_pred = os.path.join(outpath, name_model, f"{idx}_{slices}_pred" + '.png')
+        out_save_path_pred_nii = os.path.join(outpath, name_model, f"{idx}_{slices}_pred" + '.nii.gz')
         image_file_name = f"{idx}_{slices}_pred"
         plt.title = image_file_name
         plt.imsave(out_save_path_pred, out_show_pred, format='png', cmap='gray')
         plt.close()
     # saves the resampled predictions
     final_pred = nib.Nifti1Image(final_pred, affine)
-    nib.save(final_pred, out_save_path_pred)
+    nib.save(final_pred, out_save_path_pred_nii)
 
 
 def save_results(iou, dice, out_path, model_name):
@@ -168,6 +172,7 @@ def test_results(model, out_path, model_name):
     all_iou = []
     all_dice = []
     indices = 0
+    print("cek")
     for items in test_data:
         image = items["image"].cuda()
         image_shape = image.shape
@@ -188,6 +193,7 @@ def test_results(model, out_path, model_name):
         # print(img_affine, image_affine_original)
         ###############################################
         # Save results
+        print("cek2")
         save_pred(image, mask, pred, out_path, model_name, indices, image_affine_original)
         # calculate iou
         iou_all_class = IOU_metric(pred, mask)
@@ -203,17 +209,20 @@ def test_results(model, out_path, model_name):
         dice = dice_all_class.mean()
         all_dice.append(dice)
         indices = indices + 1
+        
+        
     # Save plots
     save_results(all_iou, all_dice, out_path, model_name)
 
 
 if __name__ == "__main__":
-    name = str("UNet3D_Best_0.5_Fold_4")
-    model_path = str(Path(r"../unet/cluster_results/best_models", name + ".pt"))
-    if not os.path.exists(r'../unet/test_results_3d/'):
-        os.makedirs(r'../unet/test_results_3d/')
-    result_path = r'../unet/test_results_3d/'
+    name = str("UNet3D_Attention_Best_0.5_Fold_5")
+    model_path = str(Path(r"unet/best_models", name + ".pt"))
+    if not os.path.exists(r'unet/test_results_3d/'):
+        os.makedirs(r'unet/test_results_3d/')
+    result_path = r'unet/test_results_3d/'
     model = torch.load(model_path)
+
     with torch.no_grad():
         model.eval().cuda()
         test_results(model, result_path, name)

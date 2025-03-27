@@ -1,6 +1,6 @@
-# 📌Cardiac MRI Left Ventricular Ejection Fraction Estimation
+# 📌Cardiac MRI 3D Ejection Fraction Estimation
 
-This project focuses on estimating the Left Ventricular Ejection Fraction (LVEF) from Cardiac MRI images using machine learning techniques.
+This project focuses on estimating the Ejection Fraction (EF) from Cardiac MRI images using 3D U-Net and MONAI.
 
 ## Project Structure
 

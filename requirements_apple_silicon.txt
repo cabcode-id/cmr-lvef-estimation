@@ -1,29 +1,7 @@
-## Removed invalid package: 3-1==1.0.0
-## Removed Windows-only editable install: # -e e:\hinet-main
-## Removed rarely needed/conflicting package: install==1.3.5
-## Removed ambiguous package: lab==6.0
-## Removed Windows-only packages: pywin32, pywin32-ctypes, pywinpty
-# pywin32==304
-# pywin32-ctypes==0.2.0
-## Removed sklearn==0.0 (use scikit-learn instead)
-## Removed keras-nightly (conflicts with stable Keras)
-## Removed CUDA-specific torch/torchaudio/torchvision (not for macOS)
-tensorflow-io-gcs-filesystem==0.25.0
-torch==1.10.0+cu102
-torchaudio==0.10.0+cu102
-torchvision==0.11.1+cu102
-## Removed invalid package: 3-1==1.0.0
-## Removed Windows-only editable install: # -e e:\hinet-main
-## Removed ambiguous package: lab==6.0
-## Removed rarely needed/conflicting package: install==1.3.5
-## Removed Windows-only packages: pywin32, pywin32-ctypes, pywinpty
-## Removed sklearn==0.0 (use scikit-learn instead)
-torch==1.10.0
-torchaudio==0.10.1
-torchvision==0.11.1
-## Removed keras-nightly (conflicts with stable Keras)
-## Removed tf-nightly and tf-estimator-nightly (use stable TensorFlow)
-3-1==1.0.0
+# Cleaned requirements.txt for Apple Silicon (M1/M2/M3) Mac
+# Removed CUDA, Windows-only, ambiguous, nightly, and duplicate packages
+# Only keep one set of torch/torchaudio/torchvision, use Apple Silicon compatible versions
+
 absl-py==1.0.0
 addict==2.4.0
 aiohttp==3.8.1
@@ -37,15 +15,12 @@ async-timeout==4.0.1
 attrs==21.2.0
 backcall==0.2.0
 backports.zoneinfo==0.2.1
-# Editable install with no version control (basicsr==1.2.0+unknown)
-# -e e:\hinet-main
 bleach==5.0.1
 cachetools==4.2.4
 certifi==2021.10.8
 charset-normalizer==2.0.8
 click==8.1.3
 colorama==0.4.4
-copulas==0.7.0
 ctgan==0.5.1
 cycler==0.11.0
 Cython==0.29.21
@@ -79,7 +54,6 @@ idna==3.3
 imageio==2.13.1
 importlib-metadata==4.8.2
 importlib-resources==5.8.0
-install==1.3.5
 ipykernel==5.5.6
 ipython==7.15.0
 ipython-genutils==0.2.0
@@ -98,12 +72,10 @@ jupyter-core==4.6.3
 jupyterlab==2.1.4
 jupyterlab-server==1.1.5
 Keras==2.4.3
-keras-nightly==2.10.0.dev2022051207
 Keras-Preprocessing==1.1.2
 kiwisolver==1.2.0
 kmodes==0.12.1
 kornia==0.6.4
-lab==6.0
 libclang==14.0.1
 llvmlite==0.38.1
 lmdb==1.3.0
@@ -154,9 +126,6 @@ pytorch-lightning==1.5.4
 pyts==0.12.0
 pytz==2021.3
 PyWavelets==1.2.0
-pywin32==304
-pywin32-ctypes==0.2.0
-pywinpty==2.0.5
 PyYAML==5.4.1
 pyzmq==22.3.0
 qtconsole==5.3.1
@@ -175,13 +144,11 @@ Send2Trash==1.8.0
 setuptools-scm==6.3.2
 simplejson==3.17.6
 six==1.16.0
-sklearn==0.0
 sniffio==1.2.0
 sqlparse==0.4.2
 stack-data==0.2.0
 starlette==0.19.1
 synthgauge @ git+https://github.com/datasciencecampus/synthgauge@33864d79093be45f552ad74ce61b575824dad443
-tb-nightly==2.10.0a20220511
 tensorboard==2.9.0
 tensorboard-data-server==0.6.1
 tensorboard-plugin-wit==1.8.0
@@ -190,17 +157,16 @@ termcolor==1.1.0
 terminado==0.15.0
 testpath==0.6.0
 text-unidecode==1.3
-## Removed tf-nightly and tf-estimator-nightly (use stable TensorFlow)
 threadpoolctl==3.0.0
 tifffile==2021.11.2
 timm==0.5.4
 tomli==1.2.2
-torch==1.10.0+cu102
-torchaudio==0.10.0+cu102
+torch==1.13.1
+torchaudio==0.13.1
 torchfile==0.1.0
 torchmetrics==0.6.0
 torchsummary==1.5.1
-torchvision==0.11.1+cu102
+torchvision==0.14.1
 tornado==6.1
 tqdm==4.62.3
 traitlets==5.1.1
